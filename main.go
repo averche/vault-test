@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hashicorp/vault"
+	"github.com/hashicorp/vault/vault"
 )
 
 func main() {
