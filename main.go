@@ -2,36 +2,28 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
-	"net/http"
 
-	"github.com/hashicorp/vault/vault"
 	"github.com/hashicorp/vault/api"
+	"github.com/hashicorp/vault/vault"
 )
 
 func main() {
 	// reference vault
-	cluster := vault.NewTestCluster(nil, nil, &vault.TestClusterOptions{
-		HandlerFunc: func(props *vault.HandlerProperties) http.Handler {
-			fmt.Println("test")
-			return nil
-		},
-	})
-
+	cluster := vault.NewTestCluster(nil, nil, &vault.TestClusterOptions{})
 	cluster.Start()
 	defer cluster.Cleanup()
 
 	// reference api
 	client, err := api.NewClient(api.DefaultConfig())
 	if err != nil {
-		log.Fatalf(err)
+		log.Fatal(err)
 	}
 
 	raw, err := client.Logical().ReadRawWithContext(context.Background(), "secret/data/foo")
 	if err != nil {
-		log.Fatalf(err)
+		log.Fatal(err)
 	}
 	defer raw.Body.Close()
 
