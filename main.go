@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
-	vault "github.com/hashicorp/vault-client-go"
+	"github.com/hashicorp/vault-client-go"
+	"github.com/hashicorp/vault-client-go/schema"
 )
 
 func main() {
@@ -13,6 +15,7 @@ func main() {
 	// prepare a client with the given base address
 	client, err := vault.New(
 		vault.WithBaseAddress("http://127.0.0.1:8200"),
+		vault.WithRequestTimeout(30*time.Second),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -24,8 +27,8 @@ func main() {
 	}
 
 	// write a secret
-	_, err = client.Write(ctx, "/secret/data/my-secret", map[string]any{
-		"data": map[string]any{
+	_, err = client.Secrets.KVv2Write(ctx, "my-secret", schema.KVv2WriteRequest{
+		Data: map[string]any{
 			"password1": "abc123",
 			"password2": "correct horse battery staple",
 		},
@@ -33,12 +36,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("secret written succesffully")
+	log.Println("secret written successfully")
 
 	// read a secret
-	r, err := client.Read(ctx, "/secret/data/my-secret")
+	s, err := client.Secrets.KVv2Read(ctx, "my-secret")
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("secret retrieved:", r.Data["data"])
+	log.Println("secret retrieved:", s.Data)
 }
