@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/hashicorp/vault-client-go"
 	"github.com/hashicorp/vault-client-go/schema"
@@ -14,8 +13,7 @@ func main() {
 
 	// prepare a client with the given base address
 	client, err := vault.New(
-		vault.WithBaseAddress("http://127.0.0.1:8200"),
-		vault.WithRequestTimeout(30*time.Second),
+		vault.WithAddress("http://127.0.0.1:8200"),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -43,5 +41,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("secret retrieved:", s.Data)
+
+	v := s.Data["data"]["password1"]
+
+	log.Println("secret retrieved:", v)
 }
