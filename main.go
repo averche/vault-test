@@ -25,24 +25,29 @@ func main() {
 	}
 
 	// write a secret
-	_, err = client.Secrets.KVv2Write(ctx, "my-secret", schema.KVv2WriteRequest{
-		Data: map[string]any{
-			"password1": "abc123",
-			"password2": "correct horse battery staple",
+	_, err = client.Secrets.KvV2Write(
+		ctx,
+		"my-secret",
+		schema.KvV2WriteRequest{
+			Data: map[string]any{
+				"password1": "abc123",
+				"password2": "correct horse battery staple",
+			},
 		},
-	})
+		vault.WithMountPath("secret"),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("secret written successfully")
 
 	// read a secret
-	s, err := client.Secrets.KVv2Read(ctx, "my-secret")
+	s, err := client.Secrets.KvV2Read(ctx, "my-secret", vault.WithMountPath("secret"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	v := s.Data["data"]["password1"]
+	v := s.Data.Data["password1"]
 
 	log.Println("secret retrieved:", v)
 }
