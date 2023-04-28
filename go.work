@@ -1,0 +1,10 @@
+go 1.20
+
+use (
+	.
+	../../hashicorp/vault-client-go
+)
+
+replace (
+	github.com/hashicorp/vault-client-go v0.2.0 => ../../hashicorp/vault-client-go
+)
