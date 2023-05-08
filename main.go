@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 
 	"github.com/hashicorp/vault-client-go"
 	"github.com/hashicorp/vault-client-go/schema"
@@ -35,6 +36,9 @@ func main() {
 			},
 		},
 		vault.WithMountPath("secret"),
+		vault.WithRequestCallbacks(func(r *http.Request) {
+			log.Println(*r)
+		}),
 	)
 	if err != nil {
 		log.Fatal(err)
