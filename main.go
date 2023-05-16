@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/hashicorp/vault-client-go"
 	"github.com/hashicorp/vault-client-go/schema"
@@ -36,8 +37,11 @@ func main() {
 			},
 		},
 		vault.WithMountPath("secret"),
-		vault.WithRequestCallbacks(func(r *http.Request) {
-			log.Println(*r)
+		vault.WithRequestCallbacks(func(req *http.Request) {
+			log.Println("request:", *req)
+		}),
+		vault.WithResponseCallbacks(func(req *http.Request, resp *http.Response) {
+			log.Println("response:", *resp)
 		}),
 	)
 	if err != nil {
@@ -46,7 +50,7 @@ func main() {
 	log.Println("secret written successfully")
 
 	// read a secret
-	s, err := client.Secrets.KvV2Read(ctx, "my-secret", vault.WithMountPath("secret"))
+	s, err := client.Secrets.KvV2Read(ctx, "my-secret")
 	if err != nil {
 		log.Fatal(err)
 	}
