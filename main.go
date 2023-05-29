@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"net/url"
 
 	"github.com/hashicorp/vault-client-go"
 	"github.com/hashicorp/vault-client-go/schema"
@@ -50,12 +49,23 @@ func main() {
 	log.Println("secret written successfully")
 
 	// read a secret
-	s, err := client.Secrets.KvV2Read(ctx, "my-secret")
+	s, err := client.Secrets.KvV2Read(ctx, "my-secret", vault.WithMountPath("secret"))
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("secret retrieved:", s.Data.Data)
 
-	v := s.Data.Data["password1"]
+	// list secrets
+	l, err := client.Secrets.KvV2List(ctx, "", vault.WithMountPath("secret"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("list of secrets:", l.Data.Keys)
 
-	log.Println("secret retrieved:", v)
+	// metadata
+	m, err := client.Secrets.KvV2ReadMetadata(ctx, "my-secret", vault.WithMountPath("secret"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("metadata:", m.Data)
 }

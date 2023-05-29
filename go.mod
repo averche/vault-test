@@ -2,7 +2,7 @@ module github.com/averche/vault-test
 
 go 1.18
 
-require github.com/hashicorp/vault-client-go v0.2.0
+require github.com/hashicorp/vault-client-go v0.3.3
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
