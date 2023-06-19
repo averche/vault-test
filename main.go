@@ -54,18 +54,4 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("secret retrieved:", s.Data.Data)
-
-	// list secrets
-	l, err := client.Secrets.KvV2List(ctx, "", vault.WithMountPath("secret"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("list of secrets:", l.Data.Keys)
-
-	// metadata
-	m, err := client.Secrets.KvV2ReadMetadata(ctx, "my-secret", vault.WithMountPath("secret"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("metadata:", m.Data)
 }
