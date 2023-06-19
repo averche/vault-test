@@ -54,4 +54,10 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("secret retrieved:", s.Data.Data)
+
+	t, err := client.Auth.TokenLookUpSelf(ctx)
+	if err != nil {
+		log.Fatalln("ERROR:", err)
+	}
+	log.Println("TOKEN:", t.Data)
 }
