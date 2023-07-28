@@ -25,6 +25,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	h, err := client.System.ReadHealthStatus(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Status: ", h.Data)
+
 	// write a secret
 	_, err = client.Secrets.KvV2Write(
 		ctx,
