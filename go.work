@@ -1,4 +1,4 @@
-go 1.20
+go 1.21
 
 use (
 	.
@@ -6,5 +6,5 @@ use (
 )
 
 replace (
-	github.com/hashicorp/vault-client-go v0.3.3 => ../../hashicorp/vault-client-go
+	github.com/hashicorp/vault-client-go v0.4.1 => ../../hashicorp/vault-client-go
 )
