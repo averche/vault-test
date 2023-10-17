@@ -25,6 +25,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	client.SetRequestCallbacks(func(req *http.Request) {
+		log.Println("client callback", *req)
+	})
+
 	h, err := client.System.ReadHealthStatus(ctx)
 	if err != nil {
 		log.Fatal(err)
