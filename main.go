@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -19,6 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// client.SetNamespace("my-ns/")
 
 	// authenticate with a root token (insecure)
 	if err := client.SetToken("my-token"); err != nil {
@@ -26,15 +28,10 @@ func main() {
 	}
 
 	client.SetRequestCallbacks(func(req *http.Request) {
-		log.Println("client callback", *req)
+		log.Println("REQUEST:", *req)
 	})
 
-	h, err := client.System.ReadHealthStatus(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Status: ", h.Data)
-
+	fmt.Println("\n====== WRITING ======\n")
 	// write a secret
 	_, err = client.Secrets.KvV2Write(
 		ctx,
@@ -45,11 +42,8 @@ func main() {
 				"password2": "correct horse battery staple",
 			},
 		},
-		vault.WithMountPath("secret"),
-		vault.WithRequestCallbacks(func(req *http.Request) {
-			log.Println("request:", *req)
-		}),
-		vault.WithResponseCallbacks(func(req *http.Request, resp *http.Response) {
+		vault.WithMountPath("my-mount-path"),
+		vault.WithResponseCallbacks(func(_ *http.Request, resp *http.Response) {
 			log.Println("response:", *resp)
 		}),
 	)
@@ -59,15 +53,19 @@ func main() {
 	log.Println("secret written successfully")
 
 	// read a secret
-	s, err := client.Secrets.KvV2Read(ctx, "my-secret", vault.WithMountPath("secret"))
+	fmt.Println("\n====== READING ======\n")
+
+	s, err := client.Secrets.KvV2Read(ctx, "my-secret", vault.WithMountPath("my-mount-path"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("secret retrieved:", s.Data.Data)
 
-	t, err := client.Auth.TokenLookUpSelf(ctx)
+	fmt.Println("\n====== LISTING ======\n")
+
+	l, err := client.Secrets.KvV2List(ctx, "", vault.WithMountPath("my-mount-path"))
 	if err != nil {
-		log.Fatalln("ERROR:", err)
+		log.Fatal(err)
 	}
-	log.Println("TOKEN:", t.Data)
+	log.Println("list:", l.Data)
 }

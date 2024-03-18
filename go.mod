@@ -4,7 +4,7 @@ go 1.21
 
 toolchain go1.21.1
 
-require github.com/hashicorp/vault-client-go v0.4.1
+require github.com/hashicorp/vault-client-go v0.4.3
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
